@@ -1,0 +1,43 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geolocalização e Redirecionamento</title>
+</head>
+<body>
+    <h1>Verificando sua localização...</h1>
+    <p id="status">Aguarde enquanto verificamos sua localização.</p>
+
+    <script>
+        function redirectToLink() {
+            window.location.href = "https://docs.google.com/forms/d/e/1FAIpQLSewo0eqVJygwEnYd_OhzSpjsicqXwLqQnkrx4DPbfrJX5LKog/viewform";
+        }
+
+        function checkLocation(position) {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            const targetLat = -13.05410; // Nova Latitude
+            const targetLon = -55.97079; // Longitude fornecida
+
+            // Defina a distância de tolerância para o redirecionamento (2km)
+            const tolerance = 0.018; // Aproximadamente 2km
+
+            if (Math.abs(lat - targetLat) < tolerance && Math.abs(lon - targetLon) < tolerance) {
+                redirectToLink();
+            } else {
+                document.getElementById('status').textContent = 'Você não está na NUTRIVERDE!';
+            }
+        }
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(checkLocation, function() {
+                document.getElementById('status').textContent = 'Não foi possível obter sua localização.';
+            });
+        } else {
+            document.getElementById('status').textContent = 'Geolocalização não é suportada pelo seu navegador.';
+        }
+    </script>
+</body>
+</html>
