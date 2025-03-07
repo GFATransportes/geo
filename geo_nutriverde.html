@@ -75,10 +75,10 @@
             let formData = new FormData();
             formData.append("entry.123456789", document.getElementById("data").value);  // Substitua pelo ID real do campo no Google Forms
             formData.append("entry.987654321", document.getElementById("hora").value);
-            formData.append("entry.111213141", document.getElementById("placa").value);
-            formData.append("entry.151617181", document.getElementById("motorista").value);
-            formData.append("entry.192021222", document.getElementById("tipo").value);
-            formData.append("entry.232425262", document.getElementById("produto").value);
+            formData.append("entry.153417593", document.getElementById("placa").value);
+            formData.append("entry.706589473", document.getElementById("motorista").value);
+            formData.append("entry.31852796_sentinel", document.getElementById("tipo").value);
+            formData.append("entry.1515051779_sentinel", document.getElementById("produto").value);
             
             fetch("https://docs.google.com/forms/d/e/1MGL3_vaz_KI0-45_MCTQuReLfB0F9JJA9at5RsEYW1Y/formResponse", {  // Substitua SEU_FORM_ID pelo ID real do seu formulário
                 method: "POST",
