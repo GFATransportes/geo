@@ -1,43 +1,98 @@
-
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Geolocalização e Redirecionamento</title>
+    <title>Agendamento de Descarga</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            max-width: 400px;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+        }
+        button {
+            margin-top: 15px;
+            padding: 10px;
+            background: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-    <h1>Verificando sua localização...</h1>
-    <p id="status">Aguarde enquanto verificamos sua localização.</p>
-
+    <h2>Agendamento de Descarga</h2>
+    <form id="agendamentoForm">
+        <label for="data">Data:</label>
+        <input type="date" id="data" required readonly>
+        
+        <label for="hora">Hora:</label>
+        <input type="time" id="hora" required readonly>
+        
+        <label for="placa">Placa do Veículo:</label>
+        <input type="text" id="placa" required>
+        
+        <label for="motorista">Nome do Motorista:</label>
+        <input type="text" id="motorista" required>
+        
+        <label for="tipo">Tipo de Caminhão:</label>
+        <select id="tipo" required>
+            <option value="Graneleiro">Graneleiro</option>
+            <option value="Caçamba">Caçamba</option>
+        </select>
+        
+        <label for="produto">Produto:</label>
+        <input type="text" id="produto" required>
+        
+        <button type="submit">Agendar</button>
+    </form>
+    
     <script>
-        function redirectToLink() {
-            window.location.href = "https://docs.google.com/forms/d/e/1FAIpQLSewo0eqVJygwEnYd_OhzSpjsicqXwLqQnkrx4DPbfrJX5LKog/viewform";
+        function setDateTime() {
+            let now = new Date();
+            let dateStr = now.toISOString().split('T')[0];
+            let timeStr = now.toTimeString().split(' ')[0].slice(0, 5);
+            document.getElementById("data").value = dateStr;
+            document.getElementById("hora").value = timeStr;
         }
-
-        function checkLocation(position) {
-            const lat = position.coords.latitude;
-            const lon = position.coords.longitude;
-            const targetLat = -13.05410; // Nova Latitude
-            const targetLon = -55.97079; // Longitude fornecida
-
-            // Defina a distância de tolerância para o redirecionamento (2km)
-            const tolerance = 0.018; // Aproximadamente 2km
-
-            if (Math.abs(lat - targetLat) < tolerance && Math.abs(lon - targetLon) < tolerance) {
-                redirectToLink();
-            } else {
-                document.getElementById('status').textContent = 'Você não está na NUTRIVERDE!';
-            }
-        }
-
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(checkLocation, function() {
-                document.getElementById('status').textContent = 'Não foi possível obter sua localização.';
+        
+        document.addEventListener("DOMContentLoaded", setDateTime);
+        
+        document.getElementById("agendamentoForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            
+            let formData = new FormData();
+            formData.append("entry.123456789", document.getElementById("data").value);  // Substitua pelo ID real do campo no Google Forms
+            formData.append("entry.987654321", document.getElementById("hora").value);
+            formData.append("entry.111213141", document.getElementById("placa").value);
+            formData.append("entry.151617181", document.getElementById("motorista").value);
+            formData.append("entry.192021222", document.getElementById("tipo").value);
+            formData.append("entry.232425262", document.getElementById("produto").value);
+            
+            fetch("https://docs.google.com/forms/d/e/SEU_FORM_ID/formResponse", {  // Substitua SEU_FORM_ID pelo ID real do seu formulário
+                method: "POST",
+                body: formData,
+                mode: "no-cors"
+            }).then(() => {
+                alert("Agendamento enviado com sucesso!");
+                document.getElementById("agendamentoForm").reset();
+                setDateTime();
+            }).catch((error) => {
+                alert("Erro ao enviar o agendamento.");
+                console.error(error);
             });
-        } else {
-            document.getElementById('status').textContent = 'Geolocalização não é suportada pelo seu navegador.';
-        }
+        });
     </script>
 </body>
 </html>
